@@ -688,6 +688,23 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             // search current move with reduced depth:
             score = -Negamax<false>(-alpha - 1, -alpha, reducedDepth, true, td, ss + 1);
 
+            // Crapcut
+            if (   depth < 8
+                && depth > 3
+                && mp.stage == PICK_BAD_NOISY
+                && std::abs(alpha) < MATE_FOUND
+                && score > alpha)
+            {
+                int probcutBeta = alpha - 200;
+                int probcutValue =
+                  -Negamax<false>(-probcutBeta - 1, -probcutBeta, newDepth - 3, true, td, ss + 1);
+
+                if (probcutValue < probcutBeta)
+                {
+                    score = probcutValue;
+                }
+            }
+
             // if we failed high on a reduced node we'll search with a reduced window and full depth
             if (score > alpha && newDepth > reducedDepth) {
                 // Based on the value returned by our reduced search see if we should search deeper or shallower, 
