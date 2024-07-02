@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include "bitboard.h"
+#include "move.h"
 #include "search.h"
 #include "history.h"
 #include "piece_data.h"
@@ -16,6 +18,7 @@
 #include "movegen.h"
 #include "time_manager.h"
 #include "io.h"
+#include "types.h"
 
 // Returns true if the position is a 2-fold repetition, false otherwise
 static bool IsRepetition(const Position* pos) {
@@ -591,6 +594,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             if (    depth <= 8
                 && !SEE(pos, move, see_margin[std::min(lmrDepth, 63)][isQuiet]))
                 continue;
+
         }
 
         int extension = 0;
@@ -687,6 +691,25 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             int reducedDepth = newDepth - depthReduction;
             // search current move with reduced depth:
             score = -Negamax<false>(-alpha - 1, -alpha, reducedDepth, true, td, ss + 1);
+
+            // Crapcut
+            if (   depth < 8
+                && depth > 3
+                && !isQuiet
+                && mp.stage == PICK_BAD_NOISY
+                && !isPromo(move)
+                && std::abs(alpha) < MATE_FOUND
+                && !SEE(pos, move, 0)
+                && score > alpha)
+            {
+                int probcutBeta = alpha - 200;
+                int probcutValue = -Negamax<false>(-probcutBeta - 1, -probcutBeta, newDepth - 3, true, td, ss + 1);
+
+                if (probcutValue < probcutBeta)
+                {
+                    score = probcutValue;
+                }
+            }
 
             // if we failed high on a reduced node we'll search with a reduced window and full depth
             if (score > alpha && newDepth > reducedDepth) {
