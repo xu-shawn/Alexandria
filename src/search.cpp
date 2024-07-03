@@ -2,6 +2,7 @@
 #include <cassert>
 #include <iostream>
 #include "bitboard.h"
+#include "move.h"
 #include "search.h"
 #include "history.h"
 #include "piece_data.h"
@@ -758,6 +759,12 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
                 alpha = score;
             }
         }
+    }
+
+    // Imagine yoinking from SF
+    if (!isTactical((ss-1)->move) && bestScore <= alpha)
+    {
+        updateHHScore(pos, sd, (ss-1)->move, history_bonus(depth) / 2);
     }
 
     // We don't have any legal moves to make in the current postion. If we are in singular search, return -infinite.
