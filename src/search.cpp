@@ -425,7 +425,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             || (ttBound == HFLOWER && ttScore >= beta)
             ||  ttBound == HFEXACT))
     {
-        if (ttMove != HFNONE && ttScore >= beta && !isCapture(ttMove))
+        if (ttMove != NOMOVE && ttScore >= beta && !isCapture(ttMove))
         {
             updateHHScore(pos, sd, ttMove, history_bonus(depth));
             updateCHScore(ss, ttMove, history_bonus(depth));
