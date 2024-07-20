@@ -2,6 +2,7 @@
 #include <cassert>
 #include <iostream>
 #include "bitboard.h"
+#include "move.h"
 #include "search.h"
 #include "history.h"
 #include "piece_data.h"
@@ -16,6 +17,7 @@
 #include "movegen.h"
 #include "time_manager.h"
 #include "io.h"
+#include "types.h"
 
 // Returns true if the position is a 2-fold repetition, false otherwise
 static bool IsRepetition(const Position* pos) {
@@ -422,7 +424,14 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
         && (   (ttBound == HFUPPER && ttScore <= alpha)
             || (ttBound == HFLOWER && ttScore >= beta)
             ||  ttBound == HFEXACT))
+    {
+        if (ttMove != HFNONE && ttScore >= beta && !isCapture(ttMove))
+        {
+            updateHHScore(pos, sd, ttMove, history_bonus(depth));
+            updateCHScore(ss, ttMove, history_bonus(depth));
+        }
         return ttScore;
+    }
 
     const bool ttPv = pvNode || (ttHit && FormerPV(tte.ageBoundPV));
 
