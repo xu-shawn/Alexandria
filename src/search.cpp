@@ -2,6 +2,7 @@
 #include <cassert>
 #include <iostream>
 #include "bitboard.h"
+#include "move.h"
 #include "search.h"
 #include "history.h"
 #include "piece_data.h"
@@ -659,7 +660,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             if (isQuiet) {
                 // Fuck
                 if (cutNode)
-                    depthReduction += 2;
+                    depthReduction += 2 + isCapture(ttMove);
 
                 // Reduce more if we are not improving
                 if (!improving)
