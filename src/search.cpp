@@ -595,14 +595,22 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
         if (ss->ply < td->RootDepth * 2) {
             // Singular Extensions
             if (   !rootNode
-                &&  depth >= 7
+                &&  depth >= 4
                 &&  move == ttMove
                 && !excludedMove
                 && (ttBound & HFLOWER)
                 &&  abs(ttScore) < MATE_FOUND
                 &&  ttDepth >= depth - 3) {
-                const int singularBeta = ttScore - depth;
+
+                int singularBeta;
                 const int singularDepth = (depth - 1) / 2;
+
+                if (depth < 7) {
+                    singularBeta = ttScore - depth * 3;
+                }
+                else {
+                    singularBeta = ttScore - depth;
+                }
 
                 ss->excludedMove = ttMove;
                 int singularScore = Negamax<false>(singularBeta - 1, singularBeta, singularDepth, cutNode, td, ss);
