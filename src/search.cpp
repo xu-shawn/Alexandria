@@ -606,7 +606,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
                 const int singularDepth = (depth - 1) / 2;
 
                 if (depth < 7) {
-                    singularBeta = ttScore - depth * 3;
+                    singularBeta = ttScore - 4 - depth * 3;
                 }
                 else {
                     singularBeta = ttScore - depth;
