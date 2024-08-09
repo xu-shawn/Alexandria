@@ -761,6 +761,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
                 }
                 // Update alpha iff alpha < beta
                 alpha = score;
+                depth --;
             }
         }
     }
