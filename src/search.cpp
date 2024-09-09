@@ -711,12 +711,15 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             // search current move with reduced depth:
             score = -Negamax<false>(-alpha - 1, -alpha, reducedDepth, true, td, ss + 1);
 
-            // if we failed high on a reduced node we'll search with a reduced window and full depth
-            if (score > alpha && newDepth > reducedDepth) {
-                // Based on the value returned by our reduced search see if we should search deeper or shallower, 
-                // this is an exact yoink of what SF does and frankly i don't care lmao
-                const bool doDeeperSearch = score > (bestScore + 53 + 2 * newDepth);
-                const bool doShallowerSearch = score < (bestScore + newDepth);
+            // Based on the value returned by our reduced search see if we
+            // should search deeper or shallower, this is an exact yoink of what
+            // SF does and frankly i don't care lmao
+            const bool doDeeperSearch = score > (bestScore + 53 + 2 * newDepth);
+            const bool doShallowerSearch = score < (bestScore + newDepth);
+
+            // if we failed high on a reduced node we'll search with a reduced
+            // window and full depth
+            if (score > alpha && newDepth + doDeeperSearch - doShallowerSearch > reducedDepth) {
                 newDepth += doDeeperSearch - doShallowerSearch;
                 if (newDepth > reducedDepth)
                     score = -Negamax<false>(-alpha - 1, -alpha, newDepth, !cutNode, td, ss + 1);
