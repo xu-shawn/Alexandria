@@ -721,8 +721,8 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             // window and full depth
             if (score > alpha && newDepth + doDeeperSearch - doShallowerSearch > reducedDepth) {
                 newDepth += doDeeperSearch - doShallowerSearch;
-                if (newDepth > reducedDepth)
-                    score = -Negamax<false>(-alpha - 1, -alpha, newDepth, !cutNode, td, ss + 1);
+
+                score = -Negamax<false>(-alpha - 1, -alpha, newDepth, !cutNode, td, ss + 1);
 
                 int bonus = score > alpha ? history_bonus(depth)
                                           : -history_bonus(depth);
