@@ -797,6 +797,16 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
     // Set the TT bound based on whether we failed high or raised alpha
     int bound = bestScore >= beta ? HFLOWER : alpha != old_alpha ? HFEXACT : HFUPPER;
 
+    if (    alpha == old_alpha
+            && !isTactical((ss - 1)->move)) {
+        // Scale bonus to fix it in a [-HH_MAX;HH_MAX] range
+        const int bonus = history_bonus(depth);
+        const int scaledBonus =
+             bonus - GetHHScore(pos, sd, move) * std::abs(bonus) / HH_MAX;
+        // Update move score
+        sd->searchHistory[pos->side ^ 1][FromTo(move)] += scaledBonus;
+    }
+
     if (!excludedMove) {
         if (    !inCheck
             && (!bestMove || !isTactical(bestMove))
