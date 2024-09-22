@@ -802,9 +802,10 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
         // Scale bonus to fix it in a [-HH_MAX;HH_MAX] range
         const int bonus = history_bonus(depth);
         const int scaledBonus =
-             bonus - GetHHScore(pos, sd, move) * std::abs(bonus) / HH_MAX;
+            bonus - sd->searchHistory[pos->side ^ 1][FromTo((ss - 1)->move)] *
+                        std::abs(bonus) / HH_MAX;
         // Update move score
-        sd->searchHistory[pos->side ^ 1][FromTo(move)] += scaledBonus;
+        sd->searchHistory[pos->side ^ 1][FromTo((ss - 1) -> move)] += scaledBonus;
     }
 
     if (!excludedMove) {
