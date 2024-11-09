@@ -506,7 +506,8 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
         if (   depth < 10
             && abs(eval) < MATE_FOUND
             && (ttMove == NOMOVE || isTactical(ttMove))
-            && eval - 91 * (depth - improving - canIIR) >= beta)
+            && eval - 91 * (depth - improving - canIIR) - (ss-1)->historyScore / 512 >= beta
+            && eval >= beta)
             return eval - 91 * (depth - improving - canIIR);
 
         // Null move pruning: If our position is so good that we can give the opponent a free move and still fail high,
@@ -521,6 +522,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             && BoardHasNonPawns(pos, pos->side)) {
 
             ss->move = NOMOVE;
+            ss->historyScore = -9090;
             const int R = 4 + depth / 3 + std::min((eval - beta) / 200, 3);
             ss->contHistEntry = &sd->contHist[PieceTo(NOMOVE)];
 
@@ -591,7 +593,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
 
         const bool isQuiet = !isTactical(move);
 
-        const int moveHistory = GetHistoryScore(pos, sd, move, ss, false);
+        const int moveHistory = ss->historyScore = GetHistoryScore(pos, sd, move, ss, false);
         if (   !rootNode
             &&  bestScore > -MATE_FOUND) {
 
