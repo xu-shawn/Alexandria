@@ -506,7 +506,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
         if (   depth < 10
             && abs(eval) < MATE_FOUND
             && (ttMove == NOMOVE || isTactical(ttMove))
-            && eval - 91 * (depth - improving - canIIR) - (ss-1)->historyScore / 512 >= beta
+            && eval - 91 * (depth - improving - canIIR) - (ss - 1)->historyScore / 4096 >= beta
             && eval >= beta)
             return eval - 91 * (depth - improving - canIIR);
 
