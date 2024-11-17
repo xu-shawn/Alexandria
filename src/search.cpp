@@ -832,6 +832,10 @@ int Quiescence(int alpha, int beta, ThreadData* td, SearchStack* ss) {
     int bestScore;
     int rawEval;
 
+    // Check for the highest depth reached in search to report it to the cli
+    if (ss->ply > info->seldepth)
+        info->seldepth = ss->ply;
+
     // check if more than Maxtime passed and we have to stop
     if (td->id == 0 && TimeOver(&td->info)) {
         StopHelperThreads();
@@ -898,7 +902,10 @@ int Quiescence(int alpha, int beta, ThreadData* td, SearchStack* ss) {
 
     // Stand pat
     if (bestScore >= beta)
-        return bestScore;
+    {
+        const int horizonDistance = info->seldepth - ss->ply;
+        return (bestScore * horizonDistance + beta) / (horizonDistance + 1);
+    }
 
     // Adjust alpha based on eval
     alpha = std::max(alpha, bestScore);
