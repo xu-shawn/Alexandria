@@ -241,7 +241,7 @@ void SearchPosition(int startDepth, int finalDepth, ThreadData* td, UciOptions* 
     UpdateTableAge();
     bool printFinalInfoString = false;
 
-    std::memset(td->sd.rootHistory, 0, sizeof(td->sd.rootHistory));
+    std::memset(td->sd.lowPlyHistory, 0, sizeof(td->sd.lowPlyHistory));
 
     // Call the Negamax function in an iterative deepening framework
     for (int currentDepth = startDepth; currentDepth <= finalDepth; currentDepth++) {
@@ -576,7 +576,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
     bool skipQuiets = false;
 
     Movepicker mp;
-    InitMP(&mp, pos, sd, ss, ttMove, SEARCH, rootNode);
+    InitMP(&mp, pos, sd, ss, ttMove, SEARCH);
 
     // Keep track of the played quiet and noisy moves
     MoveList quietMoves, noisyMoves;
@@ -591,7 +591,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
 
         const bool isQuiet = !isTactical(move);
 
-        const int moveHistory = GetHistoryScore(pos, sd, move, ss, false);
+        const int moveHistory = GetHistoryScore(pos, sd, move, ss, ss->ply);
         if (   !rootNode
             &&  bestScore > -MATE_FOUND) {
 
@@ -785,7 +785,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
                             sd->counterMoves[FromTo((ss - 1)->move)] = move;
                     }
                     // Update the history heuristics based on the new best move
-                    UpdateHistories(pos, sd, ss, depth + (eval <= alpha), bestMove, &quietMoves, &noisyMoves, rootNode);
+                    UpdateHistories(pos, sd, ss, depth + (eval <= alpha), bestMove, &quietMoves, &noisyMoves, ss->ply);
 
                     // node (move) fails high
                     break;
@@ -905,7 +905,7 @@ int Quiescence(int alpha, int beta, ThreadData* td, SearchStack* ss) {
 
     Movepicker mp;
     // If we aren't in check we generate just the captures, otherwise we generate all the moves
-    InitMP(&mp, pos, sd, ss, ttMove, QSEARCH, false);
+    InitMP(&mp, pos, sd, ss, ttMove, QSEARCH);
 
     Move bestmove = NOMOVE;
     Move move;
