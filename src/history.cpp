@@ -149,7 +149,7 @@ int adjustEvalWithCorrHist(const Position *pos, const SearchData *sd, const Sear
 
 int GetHistoryScore(const Position* pos, const SearchData* sd, const Move move, const SearchStack* ss, const int ply) {
     if (!isTactical(move))
-        return GetHHScore(pos, sd, move) + GetCHScore(ss, move) + (ply < 4) * 4 * GetRHScore(pos, sd, move, ply);
+        return GetHHScore(pos, sd, move) + GetCHScore(ss, move) + (ply < 4) * 8 * GetRHScore(pos, sd, move, ply) / (1 + 2 * ply);
     else
         return GetCapthistScore(pos, sd, move);
 }
