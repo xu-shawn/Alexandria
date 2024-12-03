@@ -734,7 +734,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
                 if (newDepth > reducedDepth)
                     score = -Negamax<false>(-alpha - 1, -alpha, newDepth, !cutNode, td, ss + 1);
 
-                int bonus = score > alpha ? history_bonus(depth)
+                int bonus = score > alpha ? history_bonus(depth) + std::max(depthReduction, 0) * 100
                                           : -history_bonus(depth);
                 updateCHScore(ss, move, bonus);
             }
