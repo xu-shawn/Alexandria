@@ -564,7 +564,6 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
     if (  !pvNode
         && depth > 4
         && abs(beta) < MATE_FOUND
-        && isTactical(ttMove)
         && (ttScore == SCORE_NONE || (ttBound & HFLOWER))
         && (ttScore == SCORE_NONE || tte.depth < depth - 3 || ttScore >= pcBeta))
     {
