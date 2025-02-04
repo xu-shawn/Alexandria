@@ -55,7 +55,7 @@ public:
     // Occupancies bitboards based on piece and side
     Bitboard bitboards[12] = {};
     Bitboard occupancies[2] = {};
-  
+
     NNUE::Accumulator accumStack[MAXPLY];
     int accumStackHead;
 

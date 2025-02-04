@@ -24,6 +24,7 @@ int history_bonus(const int depth);
 int history_malus(const int depth);
 // Getters for the history heuristics
 [[nodiscard]] int GetHHScore(const Position* pos, const SearchData* sd, const Move move);
+[[nodiscard]] int GetHHScore(const SearchData* sd, const int color, const Move move);
 [[nodiscard]] int GetRHScore(const Position* pos, const SearchData* sd, const Move move);
 [[nodiscard]] int GetCHScore(const SearchStack* ss, const Move move);
 [[nodiscard]] int GetSingleCHScore(const SearchStack* ss, const Move move, const int offset);
@@ -33,6 +34,7 @@ int history_malus(const int depth);
 void CleanHistories(SearchData* sd);
 // Updates history heuristics for a single move
 void updateHHScore(const Position* pos, SearchData* sd, const Move move, int bonus);
+void updateHHScore(SearchData* sd, const int side, const Move move, int bonus);
 void updateOppHHScore(const Position* pos, SearchData* sd, const Move move, int bonus);
 void updateCHScore(SearchStack* ss, const Move move, const int bonus);
 void updateCapthistScore(const Position* pos, SearchData* sd, const Move move, int bonus);
