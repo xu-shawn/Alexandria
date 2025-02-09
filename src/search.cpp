@@ -861,9 +861,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
     }
 
     if (score <= alpha && (ss - 1)->move != NOMOVE && !isTactical((ss - 1)->move))
-    {
-        updateHHScore(sd, pos->side ^ 1, (ss - 1)->move, history_bonus(depth));
-    }
+        updateHHScore(sd, pos->side ^ 1, (ss - 1)->move, history_bonus(depth) / 2);
 
     // We don't have any legal moves to make in the current postion. If we are in singular search, return -infinite.
     // Otherwise, if the king is in check, return a mate score, assuming closest distance to mating position.
