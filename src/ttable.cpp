@@ -1,5 +1,6 @@
 #include "ttable.h"
 #include "io.h"
+#include "types.h"
 #include <iostream>
 #include <cstdlib>
 
@@ -123,6 +124,8 @@ void StoreTTEntry(const ZobristKey key, const PackedMove move, int score, int ev
         tte->eval = static_cast<int16_t>(eval);
         tte->depth = static_cast<uint8_t>(depth);
     }
+    else if (tte->depth > 5 && BoundFromTT(tte->ageBoundPV) != HFEXACT)
+        tte->depth --;
 }
 
 int GetHashfull() {
