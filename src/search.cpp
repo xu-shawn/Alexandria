@@ -806,7 +806,7 @@ int Negamax(int alpha, int beta, int depth, const bool cutNode, ThreadData* td, 
             }
 
             // adjust the reduction so that we can't drop into Qsearch and to prevent extensions
-            depthReduction = std::clamp(depthReduction, 0, newDepth - 1 - pvNode);
+            depthReduction = std::max(0, std::min(depthReduction, newDepth - 1 - pvNode));
 
             int reducedDepth = newDepth - depthReduction;
             // search current move with reduced depth:
