@@ -25,7 +25,7 @@ constexpr int OUTPUT_BUCKETS = 8;
 constexpr int FT_QUANT  = 255;
 constexpr int L1_QUANT  = 64;
 constexpr int FT_SHIFT  = 10;
-constexpr int NET_SCALE = 362;
+constexpr int NET_SCALE = 450;
 
 constexpr float L1_MUL  = float(1 << FT_SHIFT) / float(FT_QUANT * FT_QUANT * L1_QUANT);
 constexpr float WEIGHT_CLIPPING = 1.98f;
